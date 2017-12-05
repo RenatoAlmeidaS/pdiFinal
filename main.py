@@ -1,14 +1,5 @@
-from skimage import io
-from skimage import color
-from skimage import filters
-from skimage import morphology
+from skimage import io, color, filters, morphology, exposure
 import os
-
-imagem = io.imread('labirintos/lab50x50.png', True)
-
-linhas, colunas = imagem.shape
-
-
 
 def limiarizar(imagem, limiar):
 	global linhas
@@ -28,19 +19,45 @@ def encontraBranco(imagem):
 			if imagem[i][j] == 1:
 				return i, j
 
-def desenharResposta(imagem):
-	global linhas
-	global colunas
-
 def branco (imagem):
 	if (imagem[0]==1.0 and imagem[1]==1.0 and imagem[2] == 1.0):
 		return True
 	return False
 
-limiarizar(imagem, 0.5)
-imagem = morphology.opening(imagem)
+def pegarEntrada():
+	global fator
+	flag = True
 
-imagem = morphology.erosion(imagem)
+	while(flag):
+		caminho = input('Digite o caminho da imagem:\n')
+		try:
+			io.imread(caminho, True)
+			flag = False
+			fator = int(input('Digite a cada quantos pixels pintados deseja salvar a imagem:\n'))	
+		except Exception as e:
+			print('\n\nErro:\n')
+			print(e)
+			print('\n\n')
+
+	return caminho
+
+
+
+imagem = io.imread(pegarEntrada(), True)
+
+linhas, colunas = imagem.shape
+
+limiarizar(imagem, 0.6)
+imagem = morphology.erosion(imagem, morphology.square(3))
+imagem = morphology.erosion(imagem, morphology.square(3))
+imagem = morphology.erosion(imagem, morphology.square(3))
+
+imagem = morphology.dilation(imagem, morphology.square(3))
+imagem = morphology.dilation(imagem, morphology.square(3))
+
+#a = morphology.dilation(a, morphology.square(3))
+
+
 erudita = morphology.erosion(imagem)
 imagem = imagem - erudita
 
@@ -57,7 +74,7 @@ imagem[l][c] = vermelho
 loop = True
 while loop:
 	indice+=1
-	if (indice == 15):
+	if (indice == fator):
 		indice = 0
 		indicejr+=1
 		io.imsave('saida/image' + str(indicejr) + '.jpg', imagem)
