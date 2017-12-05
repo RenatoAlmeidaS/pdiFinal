@@ -48,15 +48,13 @@ imagem = io.imread(pegarEntrada(), True)
 linhas, colunas = imagem.shape
 
 limiarizar(imagem, 0.6)
+
 imagem = morphology.erosion(imagem, morphology.square(3))
 imagem = morphology.erosion(imagem, morphology.square(3))
 imagem = morphology.erosion(imagem, morphology.square(3))
 
 imagem = morphology.dilation(imagem, morphology.square(3))
 imagem = morphology.dilation(imagem, morphology.square(3))
-
-#a = morphology.dilation(a, morphology.square(3))
-
 
 erudita = morphology.erosion(imagem)
 imagem = imagem - erudita
