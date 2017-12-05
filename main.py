@@ -2,8 +2,9 @@ from skimage import io
 from skimage import color
 from skimage import filters
 from skimage import morphology
+import os
 
-imagem = io.imread('labirintos/abigail.jpg', True)
+imagem = io.imread('labirintos/lab50x50.png', True)
 
 linhas, colunas = imagem.shape
 
@@ -56,7 +57,7 @@ imagem[l][c] = vermelho
 loop = True
 while loop:
 	indice+=1
-	if (indice == 5):
+	if (indice == 15):
 		indice = 0
 		indicejr+=1
 		io.imsave('saida/image' + str(indicejr) + '.jpg', imagem)
@@ -98,12 +99,8 @@ while loop:
 		continue
 	loop = False
 
-	
-
-
-
-
-
+os.system('cd saida && ffmpeg -f image2 -i image%d.jpg video.mpg && rm -r -f *.jpg')
+io.imsave('saida/solucao.jpg', imagem)
 
 io.imshow(imagem)
 io.show()
